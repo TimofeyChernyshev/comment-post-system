@@ -12,14 +12,18 @@ import (
 
 func TestToCommentConnection_NilComments(t *testing.T) {
 	result := toCommentConnection(nil, false)
-	assert.Nil(t, result)
+	require.NotNil(t, result)
+	assert.Empty(t, result.Edges)
+	require.NotNil(t, result.PageInfo)
+	assert.False(t, result.PageInfo.HasNextPage)
+	assert.Nil(t, result.PageInfo.EndCursor)
 }
 
 func TestToCommentConnection_EmptyComments(t *testing.T) {
 	comments := []*domain.Comment{}
 	result := toCommentConnection(comments, false)
 
-	assert.NotNil(t, result)
+	require.NotNil(t, result)
 	assert.Empty(t, result.Edges)
 	assert.NotNil(t, result.PageInfo)
 	assert.False(t, result.PageInfo.HasNextPage)
@@ -80,7 +84,11 @@ func TestToCommentConnection_MultipleComments(t *testing.T) {
 
 func TestToPostConnection_NilPosts(t *testing.T) {
 	result := toPostConnection(nil, false)
-	assert.Nil(t, result)
+	require.NotNil(t, result)
+	assert.Empty(t, result.Edges)
+	require.NotNil(t, result.PageInfo)
+	assert.False(t, result.PageInfo.HasNextPage)
+	assert.Nil(t, result.PageInfo.EndCursor)
 }
 
 func TestToPostConnection_EmptyPosts(t *testing.T) {

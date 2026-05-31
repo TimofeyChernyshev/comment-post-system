@@ -8,7 +8,7 @@ import (
 
 func toCommentConnection(comments []*domain.Comment, hasNextPage bool) *model.CommentConnection {
 	if comments == nil {
-		return nil
+		comments = []*domain.Comment{}
 	}
 
 	edges := make([]*model.CommentEdge, 0, len(comments))
@@ -39,7 +39,7 @@ func toCommentConnection(comments []*domain.Comment, hasNextPage bool) *model.Co
 
 func toPostConnection(posts []*domain.Post, hasNextPage bool) *model.PostConnection {
 	if posts == nil {
-		return nil
+		posts = []*domain.Post{}
 	}
 
 	edges := make([]*model.PostEdge, 0, len(posts))
