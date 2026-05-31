@@ -10,6 +10,7 @@ var (
 	ErrCommentInvalidAuthor = errors.New("comment author ID cannot be empty")
 	ErrCommentEmptyContent  = errors.New("comment content is empty")
 	ErrPostIDEmpty          = errors.New("cannot comment post with empty ID")
+	ErrCommentEmptyParent   = errors.New("cannot reply to comment with empty ID")
 )
 
 type Comment struct {
@@ -49,6 +50,9 @@ func NewComment(id string, params CommentCreationParams) (*Comment, error) {
 
 	if params.ParentID != nil {
 		*params.ParentID = strings.TrimSpace(*params.ParentID)
+		if *params.ParentID == "" {
+			return nil, ErrCommentEmptyParent
+		}
 	}
 
 	return &Comment{
