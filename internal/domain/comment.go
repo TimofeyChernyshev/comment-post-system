@@ -49,8 +49,9 @@ func NewComment(id string, params CommentCreationParams) (*Comment, error) {
 	now := time.Now().UTC()
 
 	if params.ParentID != nil {
-		*params.ParentID = strings.TrimSpace(*params.ParentID)
-		if *params.ParentID == "" {
+		trimmed := strings.TrimSpace(*params.ParentID)
+		params.ParentID = &trimmed
+		if trimmed == "" {
 			return nil, ErrCommentEmptyParent
 		}
 	}
