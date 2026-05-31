@@ -18,7 +18,7 @@ func New(port string, graphqlHandler http.Handler, ReadTimeout, WriteTimeout, Id
 
 	return &Server{
 		httpServer: &http.Server{
-			Addr:         port,
+			Addr:         ":" + port,
 			Handler:      mux,
 			ReadTimeout:  ReadTimeout,
 			WriteTimeout: WriteTimeout,
