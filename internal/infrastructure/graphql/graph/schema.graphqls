@@ -1,0 +1,110 @@
+scalar Time
+
+type Query {
+    posts(
+        first: Int!
+        after: String
+    ): PostConnection!
+
+    post(
+        id: ID!
+    ): Post
+
+    comment(id: ID!): Comment
+}
+
+type Mutation {
+    createPost(
+        params: PostCreationParams!
+    ): Post!
+
+    createComment(
+        params: CommentCreationParams!
+    ): Comment!
+
+    disableComments(
+        postID: ID!
+        actorID: ID!
+    ): Boolean!
+}
+
+type Subscription {
+    comments(
+        postID: ID!
+    ): Comment!
+}
+
+type Post {
+    id: ID!
+
+    title: String!
+    content: String!
+
+    authorID: ID!
+
+    createdAt: Time!
+    updatedAt: Time!
+
+    commentsDisabled: Boolean!
+
+    comments(
+        first: Int!
+        after: String
+    ): CommentConnection!
+}
+
+type Comment {
+    id: ID!
+    postID: ID!
+    parentID: ID
+    authorID: ID!
+
+    content: String!
+
+    createdAt: Time!
+    updatedAt: Time!
+
+    children(
+        first: Int!
+        after: String
+    ): CommentConnection!
+}
+
+type CommentConnection {
+    edges: [CommentEdge!]!
+    pageInfo: PageInfo!
+}
+
+type CommentEdge {
+    cursor: String!
+    node: Comment!
+}
+
+type PostConnection {
+    edges: [PostEdge!]!
+    pageInfo: PageInfo!
+}
+
+type PostEdge {
+    cursor: String!
+    node: Post!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    endCursor: String
+}
+
+input PostCreationParams {
+    title: String!
+    content: String!
+    authorID: ID!
+}
+
+input CommentCreationParams {
+    postID: ID!
+    parentID: ID
+    authorID: ID!
+
+    content: String!
+}
