@@ -33,6 +33,8 @@ type App struct {
 	postService     *application.PostService
 	commentService  *application.CommentService
 	subscriptionMgr *subscription.SubscriptionManager
+
+	pool *pgxpool.Pool
 }
 
 func main() {
@@ -68,6 +70,8 @@ func buildApp(cfg *config.Config) (*App, error) {
 		commentRepo application.CommentRepository
 		postRepo    application.PostRepository
 		txManager   application.TransactionManager
+
+		pool *pgxpool.Pool
 	)
 	switch cfg.StorageType {
 	case config.MemoryStorage:
@@ -78,7 +82,8 @@ func buildApp(cfg *config.Config) (*App, error) {
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.DBConntectionTimeout)
 		defer cancel()
 
-		pool, err := initPool(ctx, cfg.DatabaseURL)
+		var err error
+		pool, err = initPool(ctx, cfg.DatabaseURL)
 		if err != nil {
 			return nil, err
 		}
@@ -114,6 +119,7 @@ func buildApp(cfg *config.Config) (*App, error) {
 		postService:     postService,
 		commentService:  commentService,
 		subscriptionMgr: subMgr,
+		pool:            pool,
 	}, nil
 }
 
@@ -162,6 +168,10 @@ func (a *App) Shutdown() error {
 
 	if a.subscriptionMgr != nil {
 		a.subscriptionMgr.Close()
+	}
+
+	if a.pool != nil {
+		a.pool.Close()
 	}
 
 	slog.Info("app shutdown complete")
